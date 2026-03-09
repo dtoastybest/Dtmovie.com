@@ -1,0 +1,181 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>DT Movies</title>
+  <link rel="stylesheet" href="css/styles.css" />
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@400;600;700;800&family=Roboto:wght@300;400;500&display=swap" rel="stylesheet" />
+</head>
+<body>
+
+  <!-- ===== NAVBAR ===== -->
+  <nav class="navbar" id="navbar">
+    <div class="navbar-brand">
+      <span class="logo-icon">▶</span> DT Movies
+    </div>
+    <ul class="navbar-links">
+      <li><a href="#hero" class="nav-link active">Home</a></li>
+      <li><a href="#catalog" class="nav-link">Movies</a></li>
+      <li><a href="#trending" class="nav-link">Trending</a></li>
+      <li><a href="#mylist" class="nav-link">My List</a></li>
+    </ul>
+    <div class="navbar-search">
+      <input type="text" id="searchInput" placeholder="&#128269; Search movies..." class="search-input" />
+    </div>
+    <button class="nav-toggle" id="navToggle" aria-label="Toggle navigation">&#9776;</button>
+    <!-- Mobile-only search (inside mobile nav) -->
+    <div class="mobile-search-wrapper">
+      <input type="text" id="searchInputMobile" placeholder="&#128269; Search movies..." class="search-input" />
+    </div>
+  </nav>
+
+  <!-- ===== HERO SECTION ===== -->
+  <section class="hero" id="hero">
+    <div class="hero-bg"></div>
+    <div class="hero-content">
+      <div class="hero-badge">Featured Film</div>
+      <h1 class="hero-title">Big Buck Bunny</h1>
+      <div class="hero-meta">
+        <span class="hero-rating">&#9733; 8.5</span>
+        <span class="hero-year">2008</span>
+        <span class="hero-genre">Animation · Family</span>
+      </div>
+      <p class="hero-desc">
+        A loveable large rabbit encounters a trio of little woodland creatures who take great delight in his suffering.
+        A gorgeous open-source animated film that has captured hearts worldwide.
+      </p>
+      <div class="hero-actions">
+        <button class="btn btn-primary" id="heroPlayBtn">&#9654; Play Now</button>
+        <button class="btn btn-secondary" id="heroInfoBtn">&#128712; More Info</button>
+      </div>
+    </div>
+    <div class="hero-overlay"></div>
+  </section>
+
+  <!-- ===== GENRE FILTERS ===== -->
+  <section class="filters-section" id="catalog">
+    <div class="container">
+      <div class="section-header">
+        <h2 class="section-title">Browse Movies</h2>
+        <div class="genre-filters" id="genreFilters">
+          <button class="filter-btn active" data-genre="all">All</button>
+          <button class="filter-btn" data-genre="Animation">Animation</button>
+          <button class="filter-btn" data-genre="Action">Action</button>
+          <button class="filter-btn" data-genre="Drama">Drama</button>
+          <button class="filter-btn" data-genre="Sci-Fi">Sci-Fi</button>
+          <button class="filter-btn" data-genre="Comedy">Comedy</button>
+          <button class="filter-btn" data-genre="Adventure">Adventure</button>
+        </div>
+      </div>
+
+      <!-- MOVIE GRID -->
+      <div class="movie-grid" id="movieGrid">
+        <!-- Populated by JS -->
+      </div>
+
+      <div class="no-results" id="noResults" style="display:none;">
+        <p>&#128247; No movies found. Try a different search or filter.</p>
+      </div>
+    </div>
+  </section>
+
+  <!-- ===== TRENDING SECTION ===== -->
+  <section class="trending-section" id="trending">
+    <div class="container">
+      <h2 class="section-title">&#128293; Trending Now</h2>
+      <div class="trending-row" id="trendingRow">
+        <!-- Populated by JS -->
+      </div>
+    </div>
+  </section>
+
+  <!-- ===== MY LIST SECTION ===== -->
+  <section class="mylist-section" id="mylist" style="display:none;">
+    <div class="container">
+      <h2 class="section-title">&#10084; My List</h2>
+      <div class="trending-row" id="myListRow">
+        <!-- Populated by JS -->
+      </div>
+    </div>
+  </section>
+
+  <!-- ===== FOOTER ===== -->
+  <footer class="footer">
+    <div class="container">
+      <div class="footer-top">
+        <div class="footer-brand">
+          <span class="logo-icon">▶</span> DT Movies
+          <p class="footer-tagline">Your premium destination for movies &amp; entertainment.</p>
+        </div>
+        <div class="footer-links">
+          <div class="footer-col">
+            <h4>Navigation</h4>
+            <ul>
+              <li><a href="#hero">Home</a></li>
+              <li><a href="#catalog">Movies</a></li>
+              <li><a href="#trending">Trending</a></li>
+            </ul>
+          </div>
+          <div class="footer-col">
+            <h4>Support</h4>
+            <ul>
+              <li><a href="#">FAQ</a></li>
+              <li><a href="#">Help Center</a></li>
+              <li><a href="#">Contact Us</a></li>
+            </ul>
+          </div>
+          <div class="footer-col">
+            <h4>Legal</h4>
+            <ul>
+              <li><a href="#">Privacy Policy</a></li>
+              <li><a href="#">Terms of Use</a></li>
+              <li><a href="#">Cookie Policy</a></li>
+            </ul>
+          </div>
+        </div>
+      </div>
+      <div class="footer-bottom">
+        <p>&copy; 2025 DT Movies. All rights reserved.</p>
+        <div class="social-icons">
+          <a href="#" class="social-icon" aria-label="Twitter">&#128038;</a>
+          <a href="#" class="social-icon" aria-label="Facebook">&#128100;</a>
+          <a href="#" class="social-icon" aria-label="Instagram">&#128247;</a>
+          <a href="#" class="social-icon" aria-label="YouTube">&#127916;</a>
+        </div>
+      </div>
+    </div>
+  </footer>
+
+  <!-- ===== MOVIE MODAL ===== -->
+  <div class="modal-overlay" id="modalOverlay" role="dialog" aria-modal="true" aria-labelledby="modalTitle">
+    <div class="modal" id="modal">
+      <button class="modal-close" id="modalClose" aria-label="Close modal">&times;</button>
+      <div class="modal-video-wrapper">
+        <!-- Video injected by JS -->
+      </div>
+      <div class="modal-body">
+        <div class="modal-meta">
+          <h2 class="modal-title" id="modalTitle"></h2>
+          <div class="modal-info">
+            <span class="modal-year" id="modalYear"></span>
+            <span class="modal-rating" id="modalRating"></span>
+            <span class="modal-duration" id="modalDuration"></span>
+          </div>
+          <div class="modal-genres" id="modalGenres"></div>
+        </div>
+        <p class="modal-synopsis" id="modalSynopsis"></p>
+        <div class="modal-actions">
+          <button class="btn btn-primary" id="modalPlayBtn">&#9654; Play</button>
+          <button class="btn btn-outline" id="modalAddToListBtn">&#43; My List</button>
+          <button class="btn btn-outline" id="modalCloseBtn">&#10005; Close</button>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <script src="js/app.js"></script>
+</body>
+</html>
