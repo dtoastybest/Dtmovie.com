@@ -20,12 +20,16 @@
       <li><a href="#hero" class="nav-link active">Home</a></li>
       <li><a href="#catalog" class="nav-link">Movies</a></li>
       <li><a href="#trending" class="nav-link">Trending</a></li>
-      <li><a href="#" class="nav-link">My List</a></li>
+      <li><a href="#mylist" class="nav-link">My List</a></li>
     </ul>
     <div class="navbar-search">
       <input type="text" id="searchInput" placeholder="&#128269; Search movies..." class="search-input" />
     </div>
     <button class="nav-toggle" id="navToggle" aria-label="Toggle navigation">&#9776;</button>
+    <!-- Mobile-only search (inside mobile nav) -->
+    <div class="mobile-search-wrapper">
+      <input type="text" id="searchInputMobile" placeholder="&#128269; Search movies..." class="search-input" />
+    </div>
   </nav>
 
   <!-- ===== HERO SECTION ===== -->
@@ -83,6 +87,16 @@
     <div class="container">
       <h2 class="section-title">&#128293; Trending Now</h2>
       <div class="trending-row" id="trendingRow">
+        <!-- Populated by JS -->
+      </div>
+    </div>
+  </section>
+
+  <!-- ===== MY LIST SECTION ===== -->
+  <section class="mylist-section" id="mylist" style="display:none;">
+    <div class="container">
+      <h2 class="section-title">&#10084; My List</h2>
+      <div class="trending-row" id="myListRow">
         <!-- Populated by JS -->
       </div>
     </div>
@@ -155,6 +169,7 @@
         <p class="modal-synopsis" id="modalSynopsis"></p>
         <div class="modal-actions">
           <button class="btn btn-primary" id="modalPlayBtn">&#9654; Play</button>
+          <button class="btn btn-outline" id="modalAddToListBtn">&#43; My List</button>
           <button class="btn btn-outline" id="modalCloseBtn">&#10005; Close</button>
         </div>
       </div>

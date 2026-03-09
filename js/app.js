@@ -143,21 +143,27 @@ const MOVIES = [
 let activeGenre = 'all';
 let searchQuery = '';
 let currentMovieId = null;
+let myList = JSON.parse(localStorage.getItem('dtMoviesMyList') || '[]');
 
 /* ---------- DOM References ---------- */
-const movieGrid    = document.getElementById('movieGrid');
-const trendingRow  = document.getElementById('trendingRow');
-const noResults    = document.getElementById('noResults');
-const genreFilters = document.getElementById('genreFilters');
-const searchInput  = document.getElementById('searchInput');
-const modalOverlay = document.getElementById('modalOverlay');
-const modalClose   = document.getElementById('modalClose');
-const modalCloseBtn= document.getElementById('modalCloseBtn');
-const heroPlayBtn  = document.getElementById('heroPlayBtn');
-const heroInfoBtn  = document.getElementById('heroInfoBtn');
-const navbar       = document.getElementById('navbar');
-const navToggle    = document.getElementById('navToggle');
-const navLinks     = document.querySelector('.navbar-links');
+const movieGrid        = document.getElementById('movieGrid');
+const trendingRow      = document.getElementById('trendingRow');
+const myListRow        = document.getElementById('myListRow');
+const myListSection    = document.getElementById('mylist');
+const noResults        = document.getElementById('noResults');
+const genreFilters     = document.getElementById('genreFilters');
+const searchInput      = document.getElementById('searchInput');
+const searchInputMobile= document.getElementById('searchInputMobile');
+const modalOverlay     = document.getElementById('modalOverlay');
+const modalClose       = document.getElementById('modalClose');
+const modalCloseBtn    = document.getElementById('modalCloseBtn');
+const modalAddToListBtn= document.getElementById('modalAddToListBtn');
+const heroPlayBtn      = document.getElementById('heroPlayBtn');
+const heroInfoBtn      = document.getElementById('heroInfoBtn');
+const navbar           = document.getElementById('navbar');
+const navToggle        = document.getElementById('navToggle');
+const navLinks         = document.querySelector('.navbar-links');
+const mobileSearchWrapper = document.querySelector('.mobile-search-wrapper');
 
 /* ---------- Build Movie Card ---------- */
 function createMovieCard(movie, badgeText) {
@@ -170,6 +176,7 @@ function createMovieCard(movie, badgeText) {
 
   const genreTags = movie.genres.map(g => `<span class="genre-tag">${g}</span>`).join('');
   const badge = badgeText ? `<div class="card-trending-number">${badgeText}</div>` : '';
+  const inList = isInMyList(movie.id);
 
   card.innerHTML = `
     <div class="card-poster">
@@ -177,6 +184,11 @@ function createMovieCard(movie, badgeText) {
       <img src="${movie.poster}" alt="${movie.title} poster" loading="lazy" />
       <div class="card-overlay">
         <div class="play-icon">&#9654;</div>
+        <button class="card-list-btn ${inList ? 'in-list' : ''}"
+                aria-label="${inList ? 'Remove from My List' : 'Add to My List'}"
+                data-id="${movie.id}">
+          ${inList ? '&#10003;' : '&#43;'}
+        </button>
       </div>
     </div>
     <div class="card-body">
@@ -194,6 +206,22 @@ function createMovieCard(movie, badgeText) {
     if (e.key === 'Enter' || e.key === ' ') {
       e.preventDefault();
       openModal(movie.id);
+    }
+  });
+
+  /* Add-to-list button: stop propagation so it doesn't open the modal */
+  const listBtn = card.querySelector('.card-list-btn');
+  listBtn.addEventListener('click', (e) => {
+    e.stopPropagation();
+    toggleMyList(parseInt(listBtn.dataset.id));
+    const nowInList = isInMyList(movie.id);
+    listBtn.innerHTML = nowInList ? '&#10003;' : '&#43;';
+    listBtn.classList.toggle('in-list', nowInList);
+    listBtn.setAttribute('aria-label', nowInList ? 'Remove from My List' : 'Add to My List');
+  });
+  listBtn.addEventListener('keydown', (e) => {
+    if (e.key === 'Enter' || e.key === ' ') {
+      e.stopPropagation();
     }
   });
 
@@ -229,6 +257,40 @@ function renderTrending() {
   });
 }
 
+/* ---------- My List Helpers ---------- */
+function saveMyList() {
+  localStorage.setItem('dtMoviesMyList', JSON.stringify(myList));
+}
+
+function isInMyList(id) {
+  return myList.includes(id);
+}
+
+function toggleMyList(id) {
+  if (isInMyList(id)) {
+    myList = myList.filter(item => item !== id);
+  } else {
+    myList.push(id);
+  }
+  saveMyList();
+  renderMyList();
+}
+
+function renderMyList() {
+  if (myList.length === 0) {
+    myListSection.style.display = 'none';
+    return;
+  }
+  myListSection.style.display = '';
+  myListRow.innerHTML = '';
+  myList.forEach(id => {
+    const movie = MOVIES.find(m => m.id === id);
+    if (movie) {
+      myListRow.appendChild(createMovieCard(movie));
+    }
+  });
+}
+
 /* ---------- Genre Filter ---------- */
 genreFilters.addEventListener('click', (e) => {
   const btn = e.target.closest('.filter-btn');
@@ -238,15 +300,6 @@ genreFilters.addEventListener('click', (e) => {
   btn.classList.add('active');
   activeGenre = btn.dataset.genre;
   renderMovies();
-});
-
-/* ---------- Search ---------- */
-searchInput.addEventListener('input', (e) => {
-  searchQuery = e.target.value.trim();
-  renderMovies();
-  if (searchQuery) {
-    document.getElementById('catalog').scrollIntoView({ behavior: 'smooth' });
-  }
 });
 
 /* ---------- Open Modal ---------- */
@@ -295,6 +348,25 @@ function openModal(movieId) {
     if (vid) vid.play();
   };
 
+  /* My List button */
+  if (isInMyList(movieId)) {
+    modalAddToListBtn.innerHTML = '&#10003; In My List';
+    modalAddToListBtn.classList.add('in-list');
+  } else {
+    modalAddToListBtn.innerHTML = '&#43; My List';
+    modalAddToListBtn.classList.remove('in-list');
+  }
+  modalAddToListBtn.onclick = () => {
+    toggleMyList(movieId);
+    if (isInMyList(movieId)) {
+      modalAddToListBtn.innerHTML = '&#10003; In My List';
+      modalAddToListBtn.classList.add('in-list');
+    } else {
+      modalAddToListBtn.innerHTML = '&#43; My List';
+      modalAddToListBtn.classList.remove('in-list');
+    }
+  };
+
   /* Show overlay */
   modalOverlay.classList.add('open');
   document.body.style.overflow = 'hidden';
@@ -340,9 +412,7 @@ document.addEventListener('keydown', (e) => {
 
 /* ---------- Hero Buttons ---------- */
 heroPlayBtn.addEventListener('click', () => openModal(1)); /* Big Buck Bunny */
-heroInfoBtn.addEventListener('click', () => {
-  document.getElementById('catalog').scrollIntoView({ behavior: 'smooth' });
-});
+heroInfoBtn.addEventListener('click', () => openModal(1)); /* Open modal with more info */
 
 /* ---------- Navbar scroll effect ---------- */
 window.addEventListener('scroll', () => {
@@ -355,15 +425,32 @@ window.addEventListener('scroll', () => {
 
 /* ---------- Mobile nav toggle ---------- */
 navToggle.addEventListener('click', () => {
-  navLinks.classList.toggle('open');
+  const isOpen = navLinks.classList.toggle('open');
+  mobileSearchWrapper.classList.toggle('open', isOpen);
 });
 
 /* Close mobile nav when a link is clicked */
 navLinks.querySelectorAll('.nav-link').forEach(link => {
   link.addEventListener('click', () => {
     navLinks.classList.remove('open');
+    mobileSearchWrapper.classList.remove('open');
   });
 });
+
+/* ---------- Search ---------- */
+function handleSearch(query) {
+  searchQuery = query.trim();
+  /* Keep both inputs in sync */
+  searchInput.value = query;
+  searchInputMobile.value = query;
+  renderMovies();
+  if (searchQuery) {
+    document.getElementById('catalog').scrollIntoView({ behavior: 'smooth' });
+  }
+}
+
+searchInput.addEventListener('input', (e) => handleSearch(e.target.value));
+searchInputMobile.addEventListener('input', (e) => handleSearch(e.target.value));
 
 /* ---------- Smooth scroll for nav links ---------- */
 document.querySelectorAll('.nav-link[href^="#"]').forEach(link => {
@@ -381,3 +468,4 @@ document.querySelectorAll('.nav-link[href^="#"]').forEach(link => {
 /* ---------- Init ---------- */
 renderMovies();
 renderTrending();
+renderMyList();
